@@ -3,13 +3,11 @@
     <title>How Mainstream Are You?</title>
   </head>
   <body>
-    <h2>Please list your five favorite musical artists</h2>
+    <h2>Please list up to ten of your favorite musical artists</h2>
     <form action="how_mainstream" method="get">
-      First artist: <input type="text" name="artist"><br>
-      Second artist: <input type="text" name="artist"><br>
-      Third artist: <input type="text" name="artist"><br>
-      Fourth artist: <input type="text" name="artist"><br>
-      Fifth artist: <input type="text" name="artist"><br>
+      {% for ord in ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eigth', 'Ninth', 'Tenth'] %}
+        <label>{{ord}} artist:</label> <input type="text" name="artist"><br>
+      {% end %}
       <input type="submit" value="Submit">
     </form>
   </body>
