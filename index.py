@@ -5,6 +5,7 @@ from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 from tornado.escape import json_encode, json_decode
 from urllib import urlencode
 import uuid
+import json
 
 # your api key should be stored as the first line of a file named apikey.txt
 with open('apikey.txt', 'r') as key_file:
@@ -64,11 +65,10 @@ def create_profile():
 @gen.coroutine
 def add_artists(profile_id, artists):
     req_url = 'http://developer.echonest.com/api/v4/catalog/update'
-    data = (artists_to_items(artists))
-    req_body = urlencode({'api_key': api_key, 'format': 'json', 'id': profile_id, 'data': data, 'data_type': data})
-    headers = {'Content-Type': 'application/json; charset=UTF-8'}
-
-    req = HTTPRequest(req_url, method='POST', headers = headers, body=req_body)
+    data = json.dumps(artists_to_items(artists))
+    req_body = urlencode({'api_key': api_key, 'format': 'json', 'id': profile_id, 'data': data, 'data_type': 'json'})
+    print req_body
+    req = HTTPRequest(req_url, method='POST', body=req_body)
     http_client = AsyncHTTPClient()
     res = yield http_client.fetch(req)
     raise gen.Return(res)
