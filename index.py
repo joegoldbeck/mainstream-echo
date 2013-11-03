@@ -1,8 +1,10 @@
 import tornado.ioloop
 from tornado.web import asynchronous, RequestHandler
 from tornado import gen
-from tornado.httpclient import AsyncHTTPClient
+from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 from tornado.escape import json_encode, json_decode
+from urllib import urlencode
+import uuid
 
 # your api key should be stored as the first line of a file named apikey.txt
 with open('apikey.txt', 'r') as key_file:
@@ -20,29 +22,24 @@ class MainHandler(RequestHandler):
 class ArtistsHandler(RequestHandler):
     @gen.coroutine
     def get(self): # THIS IS TEMPORARY TO PLAY AROUND WITH
-        res = yield get_artists()
-        if res.error:
-            self.send_error(500)
-            print(res.error)
-            return
-        self.write(res.body)
+        # create_profile_res = yield create_profile()
+        # profile_id = extract_profile_id(create_profile_res.body)
+        profile_id = 'CAYBDAK1421BD0AC59'
+        artists = ['Britney Spears', 'Radiohead', 'The Beatles']
+        add_artists_res = yield add_artists(profile_id, artists)
+        ticket = extract_ticket(add_artists_res.body)
+        print {'ticket' : ticket, 'profile_id': profile_id}
+        self.write({'ticket' : ticket, 'profile_id': profile_id})
 
     @gen.coroutine
     def post(self):
+        artists = json_decode(self.get_argument('artists'))
+        print artists[1] #TEST STATEMENT
         create_profile_res = yield create_profile()
-        if create_profile_res.error:
-            self.send_error(500)
-            print 'Error creating profile: ' + create_profile_res.error
-            return
-        profile_id = extract_profile_id(create_profile_res)
-        artists = ['Britney Spears', 'Radiohead', 'The Beatles']
+        profile_id = extract_profile_id(create_profile_res.body)
         add_artists_res = yield add_artists(profile_id, artists)
-        if add_artists_res.error:
-            self.send_error(500)
-            print('Error adding artists: ' + add_artists_res.error)
-            return
-        ticket = extract_ticket(add_artists_res)
-
+        ticket = extract_ticket(add_artists_res.body)
+        self.write({'ticket' : ticket, 'profile_id': profile_id})
 
 @gen.coroutine
 def get_artists():
@@ -56,9 +53,9 @@ def get_artists():
 @gen.coroutine
 def create_profile():
     req_url = 'http://developer.echonest.com/api/v4/catalog/create'
-    req_body = json_encode({'api_key': api_key, 'format': 'json',
-                            'name': 'User\'s Favorite Artists', 'type': 'artist'})
-    req = {'method': 'POST', 'url': req_url, 'body': 'req_body'}
+    req_body = urlencode({'api_key': api_key, 'format': 'json',
+                            'name': uuid.uuid1().hex, 'type': 'artist'}) # random name for now
+    req = HTTPRequest(req_url, method='POST', body=req_body)
     http_client = AsyncHTTPClient()
     res = yield http_client.fetch(req)
     raise gen.Return(res)
@@ -67,9 +64,11 @@ def create_profile():
 @gen.coroutine
 def add_artists(profile_id, artists):
     req_url = 'http://developer.echonest.com/api/v4/catalog/update'
-    data = json_encode(artists_to_items(artists))
-    req_body = json_encode({'api_key': api_key, 'format': 'json', 'id': profile_id, 'data': data})
-    req = {'method': 'POST', 'url': req_url, 'body': 'req_body'}
+    data = (artists_to_items(artists))
+    req_body = urlencode({'api_key': api_key, 'format': 'json', 'id': profile_id, 'data': data, 'data_type': data})
+    headers = {'Content-Type': 'application/json; charset=UTF-8'}
+
+    req = HTTPRequest(req_url, method='POST', headers = headers, body=req_body)
     http_client = AsyncHTTPClient()
     res = yield http_client.fetch(req)
     raise gen.Return(res)
@@ -84,7 +83,8 @@ def extract_ticket(body):
     return parsed['response']['ticket']
 
 def artists_to_items(artists):
-    return [{'item_id': i, 'artist_name': artist} for i, artist in enumerate(artists)]
+    print artists
+    return [{'item': {'item_id': i, 'artist_name': artist}} for i, artist in enumerate(artists)]
 
 
 application = tornado.web.Application([
