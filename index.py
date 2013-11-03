@@ -11,12 +11,10 @@ with open('apikey.txt', 'r') as key_file:
     api_key = key_file.readline().rstrip('\n')
 
 
-class MainHandler(RequestHandler):
+class IndexHandler(RequestHandler):
     def get(self):
-        self._reply()
-    def _reply(self):
-        print self.request.method
         self.render('index.html')
+
 
 class HowMainstreamHandler(RequestHandler):
     @gen.coroutine
@@ -26,7 +24,7 @@ class HowMainstreamHandler(RequestHandler):
         get_profile_responses = yield [get_artist_profile(artist) for artist in artists]
         artistProfiles = [json_decode(response.body)['response']['artist'] for
                 response in get_profile_responses]
-        self.write((how_mainstream(artistProfiles)))
+        self.write(how_mainstream(artistProfiles))
 
 @gen.coroutine
 def get_artist_profile(artist):
@@ -44,7 +42,7 @@ def how_mainstream(artistProfiles):
 
 
 application = tornado.web.Application([
-    (r'/', MainHandler), # GET webpage
+    (r'/', IndexHandler),
     (r'/how_mainstream', HowMainstreamHandler)
 ])
 
