@@ -1,2 +1,6 @@
 
 apikey.txt
+
+*.ipynb
+
+*.pyc
