@@ -20,10 +20,9 @@ class HowMainstreamHandler(RequestHandler):
     @gen.coroutine
     def get(self):
         artists = [artist.strip().replace(' ', '+') for artist in self.get_arguments('artist') if artist] # could also use regex re.sub(r'\s+', '+', artist.strip()) to be even safer
-        print artists
         get_profile_responses = yield [get_artist_profile(artist) for artist in artists]
-        artistProfiles = [json_decode(response.body)['response']['artist'] for
-                response in get_profile_responses]
+        decodedResponses = [json_decode(response.body)['response'] for response in get_profile_responses]
+        artistProfiles = [response['artist'] for response in decodedResponses if 'artist' in response]
         self.write(how_mainstream(artistProfiles))
 
 @gen.coroutine

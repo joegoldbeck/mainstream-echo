@@ -1,14 +1,24 @@
 <html>
   <head>
     <title>How Mainstream Are You?</title>
+    <link rel='stylesheet' type='text/css' href='//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css'>
   </head>
   <body>
-    <h2>Please list up to ten of your favorite musical artists</h2>
-    <form action="how_mainstream" method="get">
-      {% for ord in ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eigth', 'Ninth', 'Tenth'] %}
-        <label>{{ord}} artist:</label> <input type="text" name="artist"><br>
-      {% end %}
-      <input type="submit" value="Submit">
-    </form>
+    <div class='container'>
+      <h2>Please list up to ten of your favorite musical artists</h2>
+      <form action="how_mainstream" method="get">
+        <div class='col-md-4'>
+          <!-- The placeholders are all one word because of a bug in tornado templates that breaks populated attributes with multiple words -->
+          {% for ord, holder in [('First', 'Favoritest'), ('Second', 'Love...'), ('Third','Yes!'), ('Fourth', 'Wow'), ('Fifth','Cool'), ('Sixth','Past'), ('Seventh','Forever'), ('Eighth','a.k.a.Eigth'), ('Ninth','Like'), ('Tenth','Okay')] %}
+            <div class='row'>
+              <label class='col-md-6'>{{ord}} artist:</label> <input type="text" name="artist" placeholder={{holder}} class='col-md-6'><br>
+            </div>
+          {% end %}
+        </div>
+        <div class='col-md-4'>
+          <input type="submit" value="Submit" class="btn btn-default">
+        </div>
+      </form>
+    </div>
   </body>
 </html>
