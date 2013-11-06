@@ -1,3 +1,4 @@
+import os
 import tornado.ioloop
 from tornado.web import asynchronous, RequestHandler
 from tornado import gen
@@ -6,9 +7,8 @@ from tornado.escape import json_encode, json_decode
 from urllib import urlencode
 from numpy import median
 
-# your api key should be stored as the first line of a file named apikey.txt
-with open('apikey.txt', 'r') as key_file:
-    api_key = key_file.readline().rstrip('\n')
+# your api key should be stored in the environment
+api_key = os.environ.get('ECHONEST_KEY')
 
 
 class IndexHandler(RequestHandler):
@@ -46,5 +46,5 @@ application = tornado.web.Application([
 ])
 
 if __name__ == '__main__':
-    application.listen(5000)
+    application.listen(os.environ.get('PORT', 5000))
     tornado.ioloop.IOLoop.instance().start()

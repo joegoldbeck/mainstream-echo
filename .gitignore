@@ -1,6 +1,6 @@
 
-apikey.txt
-
 *.ipynb
 
 *.pyc
+
+.env
