@@ -8,8 +8,7 @@
       <h2>Please list up to ten of your favorite musical artists</h2>
       <form action="how_mainstream" method="get">
         <div class='col-md-4'>
-          <!-- The placeholders are all one word because of a bug in tornado templates that breaks populated attributes with multiple words -->
-          {% for ord, holder in [('First', 'Favoritest'), ('Second', 'Love...'), ('Third','Yes!'), ('Fourth', 'Wow'), ('Fifth','Cool'), ('Sixth','Past'), ('Seventh','Forever'), ('Eighth','a.k.a.Eigth'), ('Ninth','Like'), ('Tenth','Okay')] %}
+          {% for ord, holder in [('First', "'My favoritest ever'"), ('Second', "'I love...'"), ('Third',"'Yes!'"), ('Fourth', "'So good'"), ('Fifth',"'Cool'"), ('Sixth',"'Fav from last year'"), ('Seventh',"'Will always enjoy'"), ('Eighth',"'a.k.a. Eigth'"), ('Ninth',"'I like...'"), ('Tenth',"'Pretty okay'")] %}
             <div class='row'>
               <label class='col-md-6'>{{ord}} artist:</label> <input type="text" name="artist" placeholder={{holder}} class='col-md-6'><br>
             </div>
