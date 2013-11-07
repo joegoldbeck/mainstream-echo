@@ -1,23 +1,16 @@
-<html>
-  <head>
-    <title>How Mainstream Are You?</title>
-    <link rel='stylesheet' type='text/css' href='//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css'>
-  </head>
-  <body>
-    <div class='container'>
-      <h2>Please list up to ten of your favorite musical artists</h2>
-      <form action="how_mainstream" method="get">
-        <div class='col-md-4'>
-          {% for ord, holder in [('First', 'My favoritest ever'), ('Second', 'I love...'), ('Third', 'Yes!'), ('Fourth', 'So good'), ('Fifth', 'Cool'), ('Sixth', "Last year's fav"), ('Seventh','Will always enjoy'), ('Eighth', 'a.k.a. Eigth'), ('Ninth', 'I like...'), ('Tenth', 'Pretty okay')] %}
-            <div class='row'>
-              <label class='col-md-6'>{{ord}} artist:</label> <input type="text" name="artist" placeholder="{{holder}}" class='col-md-6'><br>
-            </div>
-          {% end %}
+{% extends "base.html" %}
+{% block content %}
+  <h2>Please list up to ten of your favorite musical artists</h2>
+  <form action="how_mainstream" method="get">
+    <div class='col-md-4'>
+      {% for ord, holder in [('First', 'My favoritest ever'), ('Second', 'I love...'), ('Third', 'Yes!'), ('Fourth', 'So good'), ('Fifth', 'Cool'), ('Sixth', "Last year's fav"), ('Seventh','Will always enjoy'), ('Eighth', 'a.k.a. Eigth'), ('Ninth', 'I like...'), ('Tenth', 'Pretty okay')] %}
+        <div class='row'>
+          <label class='col-md-6'>{{ord}} artist:</label> <input type="text" name="artist" placeholder="{{holder}}" class='col-md-6'><br>
         </div>
-        <div class='col-md-4'>
-          <input type="submit" value="Submit" class="btn btn-default">
-        </div>
-      </form>
+      {% end %}
     </div>
-  </body>
-</html>
+    <div class='col-md-offset-5'>
+      <input type="submit" value="Am I mainstream?" class="btn btn-danger" style="margin-top: 105px;">
+    </div>
+  </form>
+{% end %}

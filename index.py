@@ -23,7 +23,7 @@ class HowMainstreamHandler(RequestHandler):
         get_profile_responses = yield [get_artist_profile(artist) for artist in artists]
         decodedResponses = [json_decode(response.body)['response'] for response in get_profile_responses]
         artistProfiles = [response['artist'] for response in decodedResponses if 'artist' in response]
-        self.write(how_mainstream(artistProfiles))
+        self.render('mainstream.html', snark=(how_mainstream(artistProfiles)))
 
 @gen.coroutine
 def get_artist_profile(artist):
@@ -34,10 +34,21 @@ def get_artist_profile(artist):
     raise gen.Return(response)
 
 def how_mainstream(artistProfiles):
+    if not artistProfiles:
+        return 'Reply hazy try again'
     hotttnessses = [profile['hotttnesss'] for profile in artistProfiles]
     familiaritys = [profile['familiarity'] for profile in artistProfiles]
     median_hot, median_fam = (median(hotttnessses), median(familiaritys))
-    return {'hot': median_hot, 'fam': median_fam}
+    if median_hot > 0.75 and median_fam > 0.75:
+        return 'You may rely on it'
+    elif median_hot > 0.75 and median_fam <= 0.75:
+        return 'Outlook good'
+    elif median_hot <= 0.75 and median_fam > 0.75:
+        return 'As I see it yes'
+    elif median_hot < 0.5 and median_fam < 0.5:
+        return 'Outlook not so good' # subtext burn
+    else:
+        return 'My sources say no'
 
 
 application = tornado.web.Application([
