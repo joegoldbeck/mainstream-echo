@@ -45,7 +45,7 @@ def how_mainstream(artistProfiles):
         return 'Outlook good'
     elif median_hot <= 0.75 and median_fam > 0.75:
         return 'As I see it yes'
-    elif median_hot < 0.5 and median_fam < 0.5:
+    elif median_hot < 0.5 or median_fam < 0.5:
         return 'Outlook not so good' # subtext burn
     else:
         return 'My sources say no'
