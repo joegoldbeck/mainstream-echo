@@ -1,5 +1,5 @@
 import unittest
-import index
+import main
 
 
 if __name__ == '__main__':
