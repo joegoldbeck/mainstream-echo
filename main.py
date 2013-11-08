@@ -3,7 +3,7 @@ import tornado.ioloop
 from tornado.web import asynchronous, RequestHandler
 from tornado import gen
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
-from tornado.escape import json_encode, json_decode
+from tornado.escape import json_encode, json_decode, squeeze
 from urllib import urlencode
 from numpy import median
 
@@ -19,7 +19,7 @@ class IndexHandler(RequestHandler):
 class HowMainstreamHandler(RequestHandler):
     @gen.coroutine
     def get(self):
-        artists = [artist.strip().replace(' ', '+') for artist in self.get_arguments('artist') if artist] # could also use regex re.sub(r'\s+', '+', artist.strip()) to be even safer
+        artists = [squeeze(artist).replace(' ', '+') for artist in self.get_arguments('artist') if artist]
         get_profile_responses = yield [get_artist_profile(artist) for artist in artists]
         decoded_response_bodies = [json_decode(response.body) for response in get_profile_responses]
         artist_profiles = format_artist_profiles(decoded_response_bodies)
